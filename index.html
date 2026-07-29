@@ -128,33 +128,26 @@
         const formulario = document.getElementById('formulario');
         const btnEnviar = document.getElementById('btn-enviar');
 
-        // Función para mover el botón "No"
         const esquivarBoton = () => {
-            // Cambiamos la posición a absoluta para moverlo libremente por la pantalla
             btnNo.style.position = 'absolute';
-            
-            // Calculamos posiciones aleatorias dentro del tamaño de la ventana
             const randomX = Math.floor(Math.random() * (window.innerWidth - btnNo.clientWidth));
             const randomY = Math.floor(Math.random() * (window.innerHeight - btnNo.clientHeight));
-            
             btnNo.style.left = `${randomX}px`;
             btnNo.style.top = `${randomY}px`;
         };
 
-        // Escuchar cuando intente hacer hover (computadora) o tocar (celular) el botón "No"
         btnNo.addEventListener('mouseover', esquivarBoton);
         btnNo.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Evita que se haga clic accidentalmente en móviles
+            e.preventDefault(); 
             esquivarBoton();
         });
 
-        // Evento cuando dice que "Sí"
         btnSi.addEventListener('click', () => {
-            pantallaPregunta.style.display = 'none'; // Oculta la pregunta
-            formulario.style.display = 'block'; // Muestra el formulario
+            pantallaPregunta.style.display = 'none'; 
+            formulario.style.display = 'block'; 
         });
 
-        // Evento final de confirmación
+        // NUEVO EVENTO PARA ENVIAR A WHATSAPP
         btnEnviar.addEventListener('click', () => {
             const hora = document.getElementById('hora').value;
             const direccion = document.getElementById('direccion').value;
@@ -162,7 +155,15 @@
             if(hora === '' || direccion === '') {
                 alert('¡Por favor llena la hora y la dirección!');
             } else {
-                alert(`¡Cita agendada! Nos vemos a las ${hora} en ${direccion}. ❤️`);
+                // AQUÍ PONES TU NÚMERO DE TELÉFONO (con el código de país, sin el símbolo +)
+                const tuNumero = "56940965079"; 
+                
+                // Este es el mensaje que te llegará
+                const mensaje = `¡Dije que sí! ❤️ Nos vemos el sábado a las ${hora} en ${direccion}.`;
+                
+                // Creamos el link de WhatsApp y la enviamos para allá
+                const urlWhatsApp = `https://wa.me/${tuNumero}?text=${encodeURIComponent(mensaje)}`;
+                window.location.href = urlWhatsApp;
             }
         });
     </script>
