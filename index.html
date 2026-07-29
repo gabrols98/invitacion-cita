@@ -121,13 +121,14 @@
         <button id="btn-enviar" class="btn">Confirmar cita</button>
     </div>
 
-    <script>
+  <script>
         const btnNo = document.getElementById('btn-no');
         const btnSi = document.getElementById('btn-si');
         const pantallaPregunta = document.getElementById('pantalla-pregunta');
         const formulario = document.getElementById('formulario');
         const btnEnviar = document.getElementById('btn-enviar');
 
+        // El botón NO se mueve
         const esquivarBoton = () => {
             btnNo.style.position = 'absolute';
             const randomX = Math.floor(Math.random() * (window.innerWidth - btnNo.clientWidth));
@@ -142,29 +143,50 @@
             esquivarBoton();
         });
 
+        // El botón SÍ muestra el formulario
         btnSi.addEventListener('click', () => {
             pantallaPregunta.style.display = 'none'; 
             formulario.style.display = 'block'; 
         });
 
-        // NUEVO EVENTO PARA ENVIAR A WHATSAPP
+        // ENVIAR DATOS POR CORREO
         btnEnviar.addEventListener('click', () => {
             const hora = document.getElementById('hora').value;
             const direccion = document.getElementById('direccion').value;
 
             if(hora === '' || direccion === '') {
                 alert('¡Por favor llena la hora y la dirección!');
-            } else {
-                // AQUÍ PONES TU NÚMERO DE TELÉFONO (con el código de país, sin el símbolo +)
-                const tuNumero = "56940965079"; 
-                
-                // Este es el mensaje que te llegará
-                const mensaje = `¡Dije que sí! ❤️ Nos vemos el sábado a las ${hora} en ${direccion}.`;
-                
-                // Creamos el link de WhatsApp y la enviamos para allá
-                const urlWhatsApp = `https://wa.me/${tuNumero}?text=${encodeURIComponent(mensaje)}`;
-                window.location.href = urlWhatsApp;
-            }
+                return; // Detiene la función si faltan datos
+            } 
+            
+            // Cambia el texto del botón para que sepa que está cargando
+            btnEnviar.innerText = 'Enviando...';
+            btnEnviar.disabled = true;
+
+            // --- PEGA TU ENLACE DE FORMSPREE AQUÍ ABAJO ---
+            const linkFormspree = "https://formspree.io/f/meeynbzn";
+
+            // Código para enviar los datos de forma invisible
+            fetch(linkFormspree, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Mensaje: "¡Dijo que SÍ! ❤️",
+                    Hora: hora,
+                    Direccion: direccion
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Mensaje de éxito en la pantalla de ella
+                    formulario.innerHTML = `<h2>¡Cita agendada! ❤️</h2><p>Nos vemos a las ${hora}.</p>`;
+                } else {
+                    alert("Hubo un pequeño error. ¡Escríbeme por WhatsApp!");
+                }
+            });
         });
     </script>
 
